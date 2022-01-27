@@ -203,7 +203,5 @@
 >
 > ![](/img/resultado3.PNG)
 
-##  Licencia y Derechos de Autor
-**©** Richard Santiago Urrea García, Estudiante de Ingeniería de Sistemas de la Escuela Colombiana de Ingeniería Julio Garavito
 
 Licencia bajo la [ GNU General Public License ](/LICENSE).
