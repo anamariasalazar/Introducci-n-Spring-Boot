@@ -119,94 +119,101 @@ viewControllerHandlerMapping
 	<scope>test</scope>
 </dependency>
 ```
-> Vamos a crear el archivo java ```src/test/java/com/example/springboot/HelloControllerTest.java``` y en el vamos a escribir lo siguiente
-> ```java
-> paquete com.ejemplo.springboot;
->
-> importar org.hamcrest.Matchers.equalTo estático;
-> importar org.springframework.test.web.servlet.result.MockMvcResultMatchers.content estático;
-> importar org.springframework.test.web.servlet.result.MockMvcResultMatchers.status estático;
-> importar org.junit.jupiter.api.Test;
-> importar org.springframework.beans.factory.annotation.Autowired;
-> importar org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-> importar org.springframework.boot.test.context.SpringBootTest;
-> importar org.springframework.http.MediaType;
-> importar org.springframework.test.web.servlet.MockMvc;
-> importar org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+> Now write a simple unit test that mocks the servlet request and response through your endpoint, as the following listing, from: ```src/test/java/com/example/springboot/HelloControllerTest.java``` 
 > 
-> @SpringBootTest
-> @AutoConfigureMockMvc
-> clase pública HelloControllerTest {
-> 
->  	@autocableado
->  	privado MockMvc mvc;
-> 
->  	@Prueba
->  	public void getHello() lanza Excepción {
->  		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.APPLICATION_JSON))
->  				.andExpect(status().isOk())
->  				.andExpect(content().string(equalTo("¡Saludos desde Spring Boot!")));
->  	}
-> }
-> ```
-> Ahora crearemos el archivo java ```src/test/java/com/example/springboot/HelloControllerIT.java``` y en el vamos a escribir lo siguiente
-> ```java
-> paquete com.ejemplo.springboot;
->
-> importar org.junit.jupiter.api.Test;
-> importar org.springframework.beans.factory.annotation.Autowired;
-> importar org.springframework.boot.test.context.SpringBootTest;
-> importar org.springframework.boot.test.web.client.TestRestTemplate;
-> importar org.springframework.http.ResponseEntity;
-> importar org.assertj.core.api.Assertions.assertThat estático;
->
-> @SpringBootTest(entorno web = SpringBootTest.WebEnvironment.RANDOM_PORT)
-> clase pública HelloControllerIT {
->
->  	@autocableado
->  	plantilla TestRestTemplate privada;
-> 
->      @Prueba
->      public void getHello() lanza Excepción {
->          ResponseEntity<String> respuesta = template.getForEntity("/", String.class);
->          assertThat(response.getBody()).isEqualTo("¡Saludos desde Spring Boot!");
->      }
-> }
-> ```
-#  Agregar servicios de producción
+```java
+package com.example.springboot;
 
-> Agregamos la siguiente dependencia al pom para poder usar los servicios de actuador
+import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.Test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class HelloControllerTest {
+
+	@Autowired
+	private MockMvc mvc;
+
+	@Test
+	public void getHello() throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(content().string(equalTo("Greetings from Spring Boot!")));
+	}
+}
+
+```
+> As well as mocking the HTTP request cycle, you can also use Spring Boot to write a simple full-stack integration test. For example, instead of (or as well as) the mock test shown earlier, we could create the following test, from```src/test/java/com/example/springboot/HelloControllerIT.java``` 
+> 
+```java
+package com.example.springboot;
+
+import org.junit.jupiter.api.Test;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class HelloControllerIT {
+
+	@Autowired
+	private TestRestTemplate template;
+
+    @Test
+    public void getHello() throws Exception {
+        ResponseEntity<String> response = template.getForEntity("/", String.class);
+        assertThat(response.getBody()).isEqualTo("Greetings from Spring Boot!");
+    }
+}
+```
+#  Add Production-grade Services
+
+> Add the following dependency to your pom.xml file:
 >
-> ```
-> <dependencia>
->  	<groupId>org.springframework.boot</groupId>
->  	<artifactId>actuador-arranque-de-resorte</artifactId>
-> </dependencia>
-> ```
-> Ahora ejecutamos ```mvnw spring-boot:run``` para correr la aplicación
+```
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+> Run the following command in a terminal window ```mvnw spring-boot:run```  
 >
-> ```
-> management.endpoint.configprops-org.springframework.boot.actuate.autoconfigure.context.properties.ConfigurationPropertiesReportEndpointProperties
-> administración.endpoint.env-org.springframework.boot.actuate.autoconfigure.env.EnvironmentEndpointProperties
-> administración.endpoint.health-org.springframework.boot.actuate.autoconfigure.health.HealthEndpointProperties
-> administración.endpoint.logfile-org.springframework.boot.actuate.autoconfigure.logging.LogFileWebEndpointProperties
-> administración.endpoints.jmx-org.springframework.boot.actuate.autoconfigure.endpoint.jmx.JmxEndpointProperties
-> administración.endpoints.web-org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties
-> administración.puntos finales.web.cors-org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties
-> management.health.diskspace-org.springframework.boot.actuate.autoconfigure.system.DiskSpaceHealthIndicatorProperties
-> gestión.info-org.springframework.boot.actuate.autoconfigure.info.InfoContributorProperties
-> administración.metrics-org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties
-> administración.metrics.export.simple-org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleProperties
-> administración.servidor-org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties
-> ```
+```
+management.endpoint.configprops-org.springframework.boot.actuate.autoconfigure.context.properties.ConfigurationPropertiesReportEndpointProperties
+management.endpoint.env-org.springframework.boot.actuate.autoconfigure.env.EnvironmentEndpointProperties
+management.endpoint.health-org.springframework.boot.actuate.autoconfigure.health.HealthEndpointProperties
+management.endpoint.logfile-org.springframework.boot.actuate.autoconfigure.logging.LogFileWebEndpointProperties
+management.endpoints.jmx-org.springframework.boot.actuate.autoconfigure.endpoint.jmx.JmxEndpointProperties
+management.endpoints.web-org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties
+management.endpoints.web.cors-org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties
+management.health.diskspace-org.springframework.boot.actuate.autoconfigure.system.DiskSpaceHealthIndicatorProperties
+management.info-org.springframework.boot.actuate.autoconfigure.info.InfoContributorProperties
+management.metrics-org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties
+management.metrics.export.simple-org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleProperties
+management.server-org.springframework.boot.actuate.autoconfigure.web.server.ManagementServerProperties
+```
 >
-> Ahora ejecutamos el comando ```curl localhost:8080/actuator/health``` en nuestra terminal para saber el estado de ese puerto y obtenemos
+> You can check the health of the application by running the following command: ```curl localhost:8080/actuator/health``` 
 >
-> ![](/img/resultado2.PNG)
+> ![](/imagenes/2.PNG)
 >
-> Finalmente ejecutamos el comando ```curl -X POST localhost:8080/actuator/shutdown``` en nuestra terminal para terminar la conexión y obtenemos
+> You can try also to invoke shutdown through curl, to see what happens when you have not added the necessary line (shown in the preceding note) to application.properties ```curl -X POST localhost:8080/actuator/shutdown```
 >
-> ![](/img/resultado3.PNG)
+> ![](/imagenes/r3.PNG)
 
 
 Licencia bajo la [ GNU General Public License ](/LICENSE).
