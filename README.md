@@ -1,119 +1,124 @@
 # Introducci-n-Spring-Boot
 
-#  Creación proyecto con primavera
+#  Starting with Spring Initializr
 
-> Podemos hacer uso de la herrramienta que nos brinda la pagina web de spring boot [Spring initializr](https://start.spring.io/) para crear la aplicación
-#  Creación aplicación web
-
-> Vamos a crear el archivo java ```src/main/java/com/example/springboot/HelloController.java``` y en el vamos a escribir lo siguiente
-> ```java
-> paquete com.ejemplo.springboot;
->
-> importar org.springframework.web.bind.annotation.GetMapping;
-> importar org.springframework.web.bind.annotation.RestController;
->
-> @RestController
-> clase pública HelloController {
->
-> 	@ObtenerMapeo("/")
->  	índice público de cadenas () {
->  		return "¡Saludos desde Spring Boot!";
->  	}
->
-> }
-> ```
-#  Crear aplicacion de clase
-
-> Vamos a crear el archivo java ```src/main/java/com/example/springboot/Application.java``` y en el vamos a escribir lo siguiente
-> ```java
-> paquete com.ejemplo.springboot;
->
-> importar java.util.Arrays;
-> importar org.springframework.boot.CommandLineRunner;
-> importar org.springframework.boot.SpringApplication;
-> importar org.springframework.boot.autoconfigure.SpringBootApplication;
-> importar org.springframework.context.ApplicationContext;
-> importar org.springframework.context.annotation.Bean;
->
-> @SpringBootApplication
-> Aplicación de clase pública {
->
->  	public static void main(String[] args) {
->  		SpringApplication.run(Application.class, args);
->  	}
->
->  	@frijol
->  	público CommandLineRunner commandLineRunner (Contexto de aplicación ctx) {
->  		devolver argumentos -> {
->
->  			System.out.println("Veamos los beans proporcionados por Spring Boot:");
+>[Spring initializr](https://start.spring.io/) 
 > 
->  			String[] beanNames = ctx.getBeanDefinitionNames();
->  			Arrays.sort(beanNames);
->  			for (String beanName : beanNames) {
->  				System.out.println(beanName);
->  			}
->
->  		};
->  	}
->
-> }
-> ```
-#  Ejecutar aplicación
+#  Create a Simple Web Application
 
-> Corremos el siguiente comando ```mvnw spring-boot:run``` en nuestra terminal y obtenemos lo siguiente
->
-> ```
-> Inspeccionemos los beans proporcionados por Spring Boot:
-> solicitud
-> beanNameHandlerMapping
-> asignación predeterminada de ServletHandler
-> despachadorServlet
-> EmbeddedServletContainerCustomizerBeanPostProcessor
-> handlerExceptionResolver
-> holaControlador
-> httpRequestHandlerAdapter
-> fuente del mensaje
-> mvcContentNegotiationManager
-> mvcConversionService
-> mvcValidador
-> org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration
-> org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration
-> org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration
-> org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration$DispatcherServletConfiguration
-> org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration$EmbeddedTomcat
-> org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration
-> org.springframework.boot.context.embedded.properties.ServerProperties
-> org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor
-> org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor
-> org.springframework.context.annotation.internalAutowiredAnnotationProcessor
-> org.springframework.context.annotation.internalCommonAnnotationProcessor
-> org.springframework.context.annotation.internalConfigurationAnnotationProcessor
-> org.springframework.context.annotation.internalRequiredAnnotationProcessor
-> org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration
-> propertySourcesBinder
-> propertySourcesPlaceholderConfigurer
-> solicitudMappingHandlerAdapter
-> requestMappingHandlerMapping
-> sourceHandlerMapping
-> mpleControllerHandlerAdapter
-> mcatEmbeddedServletContainerFactory
-> wControllerHandlerMapping
-> ```
-> Ahora ejecutamos el siguiente comando ```curl localhost:8080``` para consultar hacia lo que se encuentra en localhost en el puerto 8080 en este momento, obtenemos como resultado
+> Now you can create a web controller for a simple web application, as the following listing ```src/main/java/com/example/springboot/HelloController.java``` shows:
 > 
-> ![](/img/resultado1.PNG)
-#  Pruebas de unidad
+```java
+package com.example.springboot;
 
-> Agregamos la siguiente dependencia a nuestro pom para poder ejecutar las pruebas
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloController {
+
+	@GetMapping("/")
+	public String index() {
+		return "Greetings from Spring Boot!";
+	}
+  }
+```
 >
-> ```xml
-> <dependencia>
->  	<groupId>org.springframework.boot</groupId>
->  	<artifactId>prueba de inicio de arranque de resorte</artifactId>
->  	<alcance>prueba</alcance>
-> </dependencia>
-> ```
+#  Create an Application class
+
+> You need to modify the application class to match the following listing from ```src/main/java/com/example/springboot/Application.java``` 
+> 
+```java
+package com.example.springboot;
+
+import java.util.Arrays;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+	@Bean
+	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+		return args -> {
+
+			System.out.println("Let's inspect the beans provided by Spring Boot:");
+
+			String[] beanNames = ctx.getBeanDefinitionNames();
+			Arrays.sort(beanNames);
+			for (String beanName : beanNames) {
+				System.out.println(beanName);
+			}
+		};
+	}
+}
+```
+>
+#  Run the Application
+
+> Run the following command in a terminal window ```mvnw spring-boot:run``` 
+> 
+> You should see output similar to the following:
+```
+Let's inspect the beans provided by Spring Boot:
+application
+beanNameHandlerMapping
+defaultServletHandlerMapping
+dispatcherServlet
+embeddedServletContainerCustomizerBeanPostProcessor
+handlerExceptionResolver
+helloController
+httpRequestHandlerAdapter
+messageSource
+mvcContentNegotiationManager
+mvcConversionService
+mvcValidator
+org.springframework.boot.autoconfigure.MessageSourceAutoConfiguration
+org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration
+org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration
+org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration$DispatcherServletConfiguration
+org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration$EmbeddedTomcat
+org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration
+org.springframework.boot.context.embedded.properties.ServerProperties
+org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor
+org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor
+org.springframework.context.annotation.internalAutowiredAnnotationProcessor
+org.springframework.context.annotation.internalCommonAnnotationProcessor
+org.springframework.context.annotation.internalConfigurationAnnotationProcessor
+org.springframework.context.annotation.internalRequiredAnnotationProcessor
+org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration
+propertySourcesBinder
+propertySourcesPlaceholderConfigurer
+requestMappingHandlerAdapter
+requestMappingHandlerMapping
+resourceHandlerMapping
+simpleControllerHandlerAdapter
+tomcatEmbeddedServletContainerFactory
+viewControllerHandlerMapping
+```
+> Now run the service with curl (in a separate terminal window), by running the following command (shown with its output): ```curl localhost:8080``` para consultar 
+> 
+> ![](/imagenes/1.PNG)
+> 
+#  Add Unit Tests
+
+> Add the following to your pom.xml file
+>
+```xml
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-test</artifactId>
+	<scope>test</scope>
+</dependency>
+```
 > Vamos a crear el archivo java ```src/test/java/com/example/springboot/HelloControllerTest.java``` y en el vamos a escribir lo siguiente
 > ```java
 > paquete com.ejemplo.springboot;
