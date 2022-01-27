@@ -213,7 +213,7 @@ management.server-org.springframework.boot.actuate.autoconfigure.web.server.Mana
 >
 > You can try also to invoke shutdown through curl, to see what happens when you have not added the necessary line (shown in the preceding note) to application.properties ```curl -X POST localhost:8080/actuator/shutdown```
 >
-> ![](/imagenes/r3.PNG)
+> ![](/imagenes/3.PNG)
 
 
 Licencia bajo la [ GNU General Public License ](/LICENSE).
